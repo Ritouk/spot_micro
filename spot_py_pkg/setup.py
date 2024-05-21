@@ -20,6 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'controller_input = spot_py_pkg.controller_input:main',
+            'spot_controller = spot_py_pkg.spot_controller:main'
         ],
     },
 )

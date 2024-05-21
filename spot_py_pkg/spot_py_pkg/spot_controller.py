@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 
-from spot_py import servo_fun_lib
+from spot_py_pkg import servo_fun_lib
 
 from example_interfaces.msg import String
 
