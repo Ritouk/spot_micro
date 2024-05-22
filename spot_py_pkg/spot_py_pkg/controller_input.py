@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-import getch
+from getch import getch
 from example_interfaces.msg import String
 
 class ControllerInputNode(Node):
@@ -14,7 +14,9 @@ class ControllerInputNode(Node):
         while(True):
             user_input = ''
             self.get_logger().info(f'Waiting for input')
-            user_input = getch.getch()
+            user_input = getch()
+            if user_input == ('\033'):
+                self.get_logger().info("Arrow Input Detected")
             self.get_logger().info(f'Your single Character input was: {user_input}')
             msg = String()
             msg.data = user_input
