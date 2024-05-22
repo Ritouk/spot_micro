@@ -35,13 +35,17 @@ class SpotControllerNode(Node):
         elif char == 'C':
             self.get_logger().info("ROT RIGHT")
         elif char == "q":
+            self.get_logger().info("lie Down")
             self.spot.lie_down(times=3)
         elif char == "u":
+            self.get_logger().info("Get Up")
             self.spot.get_up(times=3)
         elif char == "l":
+            self.get_logger().info("Low")
             self.spot.low(times=3)
         elif char == "s":
-            self.spot.sleep
+            self.get_logger().info("Sleep")
+            self.spot.sleep()
         elif char == "x":
             #NOT WORKING PROPERLY
             self.get_logger().info("Shutting down, putting robot in sleep")
