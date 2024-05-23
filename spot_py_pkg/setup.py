@@ -24,7 +24,4 @@ setup(
             'spot_controller = spot_py_pkg.spot_controller:main'
         ],
     },
-    scripts= [
-        'scripts/launch_spot.sh'
-    ]
 )

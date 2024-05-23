@@ -85,7 +85,7 @@ class SpotPosition():
             return
         #getting current pos
         current_pos = self.get_current_pos(servos)
-        interval = 0.2 #[sec]
+        interval = 0.03 #[sec]
         num_intervals = (int)(t/interval)
         
         #making the matrix
@@ -97,8 +97,8 @@ class SpotPosition():
         #movement
         for j in range(num_intervals): 
             for i, servo_nb in enumerate(servos):
-                #print(f"servo {servo_nb} goes into position {pos_matrix[i,j]}")
-                self.kit.servo[servo_nb] = pos_matrix[i,j]
+                print(f"servo {servo_nb} goes into position {pos_matrix[i,j]}")
+                self.kit.servo[servo_nb].angle = pos_matrix[i,j]
             time.sleep(interval)
             
         #update current position
@@ -108,9 +108,8 @@ class SpotPosition():
         #shoulders
         self.controlled_motion([5, 6, 10, 11], [100, 90, 100, 85], times)
         #forearms
-        self.controlled_motion([3, 4, 12 ,13], [80, 80, 90, 85], times)
-        #arms
-        self.controlled_motion([1, 2, 14, 15], [15, 180, 170, 0], times)
+        self.controlled_motion([ 3,  4, 12 , 13,  1,   2,  14, 15], 
+                               [80, 80, 90,  85, 15, 180, 170,  0], times)
         
     def get_up(self, times):
         #shoulders
@@ -122,14 +121,22 @@ class SpotPosition():
     def lie_down(self, times):
         #shoulders
         self.controlled_motion([ 5,   6,  10, 11], 
-                               [45, 140, 140, 40], times)
+                               [100, 90, 100, 85], times)
         #forearms
-        self.controlled_motion([  3,  4,  12 ,13], 
-                               [100, 80, 80, 100], times)
-        #arms
-        self.controlled_motion([ 1,   2,  14, 15], 
-                               [15, 180, 170,  0], times)
+        self.controlled_motion([  3,  4,  12 , 13,  1,   2,  14, 15], 
+                               [100, 80, 80,  100, 15, 180, 170,  0], times)
 
+        #shoulders
+        self.controlled_motion([ 5,   6,  10, 11], 
+                               [45, 140, 140, 40], times)
+
+    def sit(self, times):
+        #shoulders
+        self.controlled_motion([5, 6, 10, 11], [100, 90, 100, 85], times)
+        #forearms
+        self.controlled_motion([ 3,   4, 12 , 13,  1,  2,  14, 15], 
+                               [30, 150, 90,  85, 95, 90, 160,  0], times)
+    
     def low_default(self):
         #shoulders
         self.kit.servo[5].angle = 100
@@ -142,12 +149,12 @@ class SpotPosition():
         self.kit.servo[4].angle = 80
         self.kit.servo[13].angle = 85
         self.kit.servo[12].angle = 90
-        time.sleep(1)
         #arms
         self.kit.servo[1].angle = 15
         self.kit.servo[2].angle = 180
         self.kit.servo[15].angle = 0
         self.kit.servo[14].angle = 170
+
         time.sleep(1)
         
     def wake_up(self):
