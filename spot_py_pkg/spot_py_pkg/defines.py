@@ -1,3 +1,4 @@
+from spot_py_pkg.defines_local import CALIB_CORR
 ##-- DEBUG MODE (1 yes, 0 no)
 IS_CALIB = 0
 IS_POS_TEST = 0
@@ -80,4 +81,6 @@ Change the values until you get the precision required
 Update Min and Max pos to avoid any undesired angles, maximum or minimum
 note: The calibration should of taken care of Left Knees Max and Right Knee min
 
+AFTER CALIBRATION, COPY THE CALIB_CORR to the defines.local tab and delete the value here! 
+The defines.local file is not updated by the git, so it won't change when updating it.
 """
