@@ -76,10 +76,9 @@ class SpotPosition():
         counter = 0
         for i, servo_nb in enumerate(servos):
             #print(f"{i}, {servo_nb}, {new_pos[i]}")
-            if (new_pos[i] < self.min_pos[servo_nb] and 
-                new_pos[i] > self.max_pos[servo_nb]):
+            if (new_pos[i] < MIN_POS[servo_nb] and 
+                new_pos[i] > MAX_POS[servo_nb]):
                 print("position is out of boundaries, cancelling movement")
-                self.get_logger().debug("!!!Robot Control has been Started")
                 return 0
             if (new_pos[i] == self.current_pos[servo_nb]):
                 counter+=1
@@ -89,13 +88,16 @@ class SpotPosition():
         return 1
     
     def controlled_motion_abs(self, servos, pos_array, t):
+        #getting array for check
         new_positions = np.zeros(len((servos)))
         for i, servo_nb in enumerate(servos):
             new_positions[i] = pos_array[servo_nb]
+            
         #checking validity of data
         position_valid = self.boundaries_check(servos, new_positions)
         if not position_valid:
             return
+        
         #getting current pos
         current_pos = self.get_current_pos(servos)
         interval = 0.03 #[sec]
@@ -119,50 +121,46 @@ class SpotPosition():
         
     def low(self, times):
         #shoulders
-        self.controlled_motion_abs([RFE, LFE, LBE, RBE], 
-                               [DEFAULT_POS[RFE], DEFAULT_POS[LFE], DEFAULT_POS[LBE], DEFAULT_POS[RBE]]
-                               , times)
+        self.controlled_motion_abs([RFE, LFE, LBE, RBE], DEFAULT_POS, times)
         #forearms
         self.controlled_motion_abs([RFI,  LFI, LBI , RBI,  RFK,   LFK,  LBK, RBK], 
-                               [ DEFAULT_POS[RFI], DEFAULT_POS[LFI], DEFAULT_POS[LBI], DEFAULT_POS[RBI], DEFAULT_POS[RFK], DEFAULT_POS[LFK], DEFAULT_POS[LBK], DEFAULT_POS[RBK]]
-                               , times)
+                                   DEFAULT_POS, 
+                                   times)
         
     def get_up(self, times):
+        print("up! ")
         #shoulders
         self.controlled_motion_abs([RFE, LFE, LBE, RBE], 
-                               [UP_POS[RFE], UP_POS[LFE], UP_POS[LBE], UP_POS[RBE]]
-                               , times)
+                               UP_POS,
+                               times)
         #forearms & arms
-        self.controlled_motion_abs([ RFK, LFK, RFI, LFI,
-                                    LBI, RBI, LBK, RBK], 
-                               [ UP_POS[RFK], UP_POS[LFK], UP_POS[RFI], UP_POS[LFI], 
-                                UP_POS[LBI], UP_POS[RBI], UP_POS[LBK], UP_POS[RBK]]
-                               , times)
+        self.controlled_motion_abs([ RFK, LFK, RFI, LFI, LBI, RBI, LBK, RBK], UP_POS, times)
         
         
     def lie_down(self, times):
         #shoulders
         self.controlled_motion_abs([RFE, LFE, LBE, RBE], 
-                               [DEFAULT_POS[RFE], DEFAULT_POS[LFE], DEFAULT_POS[LBE], DEFAULT_POS[RBE]]
-                               , times)
+                               DEFAULT_POS,
+                               times)
         #forearms
         self.controlled_motion_abs([  RFI,  LFI,  LBI , RBI,  RFK,   LFK,  LBK, RBK], 
-                               [100, 80, 80,  100, 15, 180, 170,  0], times)
+                               LIE_DOWN_POS, times)
 
         #shoulders
         self.controlled_motion_abs([ RFE,   LFE,  LBE, RBE], 
-                               [45, 140, 140, 40], times)
+                               LIE_DOWN_POS, times)
 
     def sit(self, times):
         #shoulders
         self.controlled_motion_abs([RFE, LFE, LBE, RBE], 
-                               [DEFAULT_POS[RFE], DEFAULT_POS[LFE], DEFAULT_POS[LBE], DEFAULT_POS[RBE]]
+                               SIT_POS
                                , times)
         #forearms
-        self.controlled_motion_abs([ RFI,   LFI, LBI , RBI,  RFE,  LFK,  LBK, RBK], 
-                               [30, 150, 90,  85, 95, 90, 160,  0], times)
+        self.controlled_motion_abs([ RFK, LFI, LBI , RBI,  RFE,  LFK,  LBK, RBK], 
+                                    SIT_POS, times)
     
     def low_default(self):
+        print("Getting to default - low")
         #shoulders
         self.kit.servo[RFE].angle = DEFAULT_POS[RFE]
         self.kit.servo[LFE].angle = DEFAULT_POS[LFE]
@@ -242,13 +240,11 @@ class SpotPosition():
         #self.low_default()
         #moving to position
         self.controlled_motion_abs([RFE, LFE, LBE, RBE], 
-                               [TEST_POS[RFE], TEST_POS[LFE], TEST_POS[LBE], TEST_POS[RBE]]
+                               TEST_POS
                                , times)
         #forearms
         self.controlled_motion_abs([RFI, LFI, LBI, RBI, 
-                                RFK, LFK, LBK, RBK], 
-                               [TEST_POS[RFI], TEST_POS[LFI], TEST_POS[LBI], TEST_POS[RBI], 
-                                TEST_POS[RFK], TEST_POS[LFK], TEST_POS[LBK], TEST_POS[RBK]]
+                                RFK, LFK, LBK, RBK], TEST_POS
                                , times)
             
     def angle_norm(self, servo, angle):

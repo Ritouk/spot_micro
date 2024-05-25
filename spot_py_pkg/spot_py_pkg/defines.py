@@ -1,5 +1,5 @@
 ##-- DEBUG MODE (1 yes, 0 no)
-IS_CALIB = 1
+IS_CALIB = 0
 IS_POS_TEST = 0
 ###------ Servo Nb
 NIU = 0 #NOT IN USE
@@ -38,12 +38,18 @@ CALIB_CORR =  [NIU,  30, -30,   0,   0,   0,   0, NIU, NIU, NIU,   0,   0,   0, 
 SERVO_NB    = [NIU,  1,   2,  3,  4,   5,  6,  NIU, NIU, NIU, 10, 11, 12,  13, 14, 15]
 
 # Absolute Positions
-SERVO_ORDER = [NIU, RFK, LFK, RFI, LFI, RFE, LFE, NIU, NIU, NIU, LBE, RBE, LBI, RBI, LBK, RBK]
-DEFAULT_POS = [NIU ,  0, 180,  90,  90,  90,  90, NIU, NIU, NIU,  90,  90,  90,  90, 180,   0] + CALIB_CORR
-LOW_POS     = [NIU ,  0, 180,  90,  90,  90,  90, NIU, NIU, NIU,  90,  90,  90,  90, 180,   0] + CALIB_CORR
+SERVO_ORDER  = [NIU, RFK, LFK, RFI, LFI, RFE, LFE, NIU, NIU, NIU, LBE, RBE, LBI, RBI, LBK, RBK]
+DEFAULT_POS  = [NIU ,  0, 180,  90,  90,  90,  90, NIU, NIU, NIU,  90,  90,  90,  90, 180,   0] + CALIB_CORR
+LOW_POS      = [NIU ,  0, 180,  90,  90,  90,  90, NIU, NIU, NIU,  90,  90,  90,  90, 180,   0] + CALIB_CORR
+LIE_DOWN_POS = [NIU ,  0, 180,  90,  90,  45, 135, NIU, NIU, NIU, 135,  45,  90,  90, 180,   0] + CALIB_CORR
 
 ALPHA = 45
-UP_POS      = DEFAULT_POS + ALPHA * [NIU, 1, -1, -1, 1, 0, 0, NIU, NIU, NIU, 0, 0, 1,-1, -1, 1]
+UP_POS = [ a * ALPHA for a in [NIU, 1, -1, -1, 1, 0, 0, NIU, NIU, NIU, 0, 0, 1,-1, -1, 1]]
+UP_POS = [a + b for a, b in zip(DEFAULT_POS, UP_POS)]
+
+BETA = 45
+SIT_POS = [ element * BETA for element in [NIU, 1, -1, -1, 1, 0, 0, NIU, NIU, NIU, 0, 1, -1, 0, 0, 0]]
+SIT_POS = [a + b for a, b in zip(DEFAULT_POS, SIT_POS)]
 #Relative Positions 
 
 #This array is to test particular position, the servo will jump directly to the position, be careful! 
