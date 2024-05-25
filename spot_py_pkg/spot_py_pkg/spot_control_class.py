@@ -5,7 +5,7 @@ import numpy as np
 
 from adafruit_servokit import ServoKit
 from spot_py_pkg.defines import *
-from defines import *
+#from defines import *
 class SpotPosition():
     def __init__(self):
         #init Servo kit

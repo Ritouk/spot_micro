@@ -16,8 +16,15 @@ def generate_launch_description():
         arguments=["--number_of_cycles", "1"],
         on_exit= actions.Shutdown()
     )
-    
+    gyroscope_node = Node(
+        package="spot_cpp_pkg",
+        executable="gyroscope",
+        name="gyroscope",
+        arguments=["--number_of_cycles", "1"],
+        on_exit= actions.Shutdown()
+    )
     ld.add_action(spot_controller_node)
+    ld.add_action(gyroscope_node)
     
     # This node needs to be launched separately, as it needs to 
     #ld.add_action(controller_input_node)
