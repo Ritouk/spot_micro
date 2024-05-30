@@ -31,7 +31,7 @@ LBE = 10
 SERVO_ORDER = [NIU, RFK, LFK, RFI, LFI, RFE, LFE, NIU, NIU, NIU, LBE, RBE, LBI, RBI, LBK, RBK]
 # First Calibration, to assemble the servos 
 CALIB_POS   = [NIU,  90,  90,  90,  90,  90,  90, NIU, NIU, NIU,  90,  90,  90,  90,  90,  90]
-CALIB_CORR =  [NIU,  30, -30,   0,   0,   0,   0, NIU, NIU, NIU,   0,   0,   0,   0, -30,  30]
+
 # Second Calibration, software correction for assemblies errors
 
 
@@ -40,27 +40,31 @@ SERVO_NB    = [NIU,  1,   2,  3,  4,   5,  6,  NIU, NIU, NIU, 10, 11, 12,  13, 1
 
 # Absolute Positions
 SERVO_ORDER  = [NIU, RFK, LFK, RFI, LFI, RFE, LFE, NIU, NIU, NIU, LBE, RBE, LBI, RBI, LBK, RBK]
-DEFAULT_POS  = [NIU ,  0, 180,  90,  90,  90,  90, NIU, NIU, NIU,  90,  90,  90,  90, 180,   0] + CALIB_CORR
-LOW_POS      = [NIU ,  0, 180,  90,  90,  90,  90, NIU, NIU, NIU,  90,  90,  90,  90, 180,   0] + CALIB_CORR
-LIE_DOWN_POS = [NIU ,  0, 180,  90,  90,  45, 135, NIU, NIU, NIU, 135,  45,  90,  90, 180,   0] + CALIB_CORR
+DEFAULT_POS  = [NIU ,  180, 0,  90,  90,  90,  90, NIU, NIU, NIU,  90,  90,  90,  90, 0,   180]
+DEFAULT_POS = [a + b for a, b in zip(DEFAULT_POS, CALIB_CORR)]
+print(DEFAULT_POS)
+LOW_POS      = [NIU ,  180, 0,  90,  90,  90,  90, NIU, NIU, NIU,  90,  90,  90,  90, 0,   180]
+LOW_POS = [a + b for a, b in zip(LOW_POS, CALIB_CORR)]
+LIE_DOWN_POS = [NIU ,  180, 0,  90,  90,  135, 45, NIU, NIU, NIU, 45,  135,  90,  90, 0,   180]
+LIE_DOWN_POS = [a + b for a, b in zip(LIE_DOWN_POS, CALIB_CORR)]
 
-ALPHA = 45
-UP_POS = [ a * ALPHA for a in [NIU, 1, -1, -1, 1, 0, 0, NIU, NIU, NIU, 0, 0, 1,-1, -1, 1]]
+UP_POS = [NIU, -45, 45, 30, -30, 0, 0, NIU, NIU, NIU, 0, 0, -30,30, 45, -45]
 UP_POS = [a + b for a, b in zip(DEFAULT_POS, UP_POS)]
-
-BETA = 45
-SIT_POS = [ element * BETA for element in [NIU, 1, -1, -1, 1, 0, 0, NIU, NIU, NIU, 0, 1, -1, 0, 0, 0]]
-SIT_POS = [a + b for a, b in zip(DEFAULT_POS, SIT_POS)]
+print(DEFAULT_POS)
+print(UP_POS)
+SIT_POS = [NIU, -45, 45, 30, -30, 0, 0, NIU, NIU, NIU, 0, 0, 0, 0, 30, -30]
+SIT_POS = [a + b for a, b in zip(LOW_POS, SIT_POS)]
 #Relative Positions 
 
 #This array is to test particular position, the servo will jump directly to the position, be careful! 
-TEST_POS    = [NIU,  30, 150,  30, 150, 100,  90, NIU, NIU, NIU, 100,  85,  90,  85, 170,   0] + CALIB_CORR
+TEST_POS    = [NIU,  0, 180,  30, 150, 100,  90, NIU, NIU, NIU, 100,  85,  90,  85, 170,   0] + CALIB_CORR
 #maximum and minimum of the position
 MIN_POS =     [NIU,  20,  20,  20,  20,  20,  20, NIU, NIU, NIU,  20,  20,  20,  20,  20,  20]
 MAX_POS =     [NIU, 160, 160, 160, 160, 160, 160, NIU, NIU, NIU, 160, 160, 160, 160, 160, 160]
 
-MIN_POS =     [NIU,   0,   0,   0,   0,   0,   0, NIU, NIU, NIU,   0,   0,   0,   0,   0,   0]
-MAX_POS =     [NIU, 180, 180, 180, 180, 180, 180, NIU, NIU, NIU, 180, 180, 180, 180, 180, 180]
+#CALIB_CORR =  [NIU,  -20, 10, -10,  -10,   5, 25, NIU, NIU, NIU,  10,  0,   0,   0, 10,  -20]
+MIN_POS =     [NIU,   0,   10,   0,   0,   0,   0, NIU, NIU, NIU,   0,   0,   0,   0, 10,   0]
+MAX_POS =     [NIU, 160, 100, 180, 180, 180, 180, NIU, NIU, NIU, 180, 180, 180, 180, 180, 160]
 """
 How to calibrate
 1. Mechanical Calbiration

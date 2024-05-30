@@ -20,8 +20,7 @@ class SpotPosition():
             self.direct_pos(CALIB_POS)
         elif (IS_POS_TEST):
             print("Position Testing")
-            self.direct_pos(TEST_POS)
-            #self.pos_test_safe(self, 3)
+            self.low_default()
         else:
             print("Waking up")
             self.wake_up()
@@ -121,10 +120,10 @@ class SpotPosition():
         
     def low(self, times):
         #shoulders
-        self.controlled_motion_abs([RFE, LFE, LBE, RBE], DEFAULT_POS, times)
+        self.controlled_motion_abs([RFE, LFE, LBE, RBE], LOW_POS, times)
         #forearms
         self.controlled_motion_abs([RFI,  LFI, LBI , RBI,  RFK,   LFK,  LBK, RBK], 
-                                   DEFAULT_POS, 
+                                   LOW_POS, 
                                    times)
         
     def get_up(self, times):
@@ -135,8 +134,7 @@ class SpotPosition():
                                times)
         #forearms & arms
         self.controlled_motion_abs([ RFK, LFK, RFI, LFI, LBI, RBI, LBK, RBK], UP_POS, times)
-        
-        
+    
     def lie_down(self, times):
         #shoulders
         self.controlled_motion_abs([RFE, LFE, LBE, RBE], 
@@ -233,8 +231,7 @@ class SpotPosition():
             #print(f"servo {i} gets the value {array[i]}")
             self.kit.servo[i].angle = array[i]
         time.sleep(1)
-                
-        
+                      
     def pos_test_safe(self, times):
         # getting to safe pos
         #self.low_default()
