@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'spot_py_pkg'
+package_name = 'motion_control'
 
 setup(
     name=package_name,
@@ -20,8 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'controller_input = spot_py_pkg.controller_input:main',
-            'spot_controller = spot_py_pkg.spot_controller:main'
+            'controller_input = motion_control.controller_input:main',
+            'spot_controller = motion_control.spot_controller:main'
         ],
     },
 )

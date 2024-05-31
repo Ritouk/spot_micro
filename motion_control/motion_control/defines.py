@@ -1,4 +1,4 @@
-from spot_py_pkg.defines_local import CALIB_CORR
+from motion_control.defines_local import CALIB_CORR
 ##-- DEBUG MODE (1 yes, 0 no)
 IS_CALIB = 0
 IS_POS_TEST = 0

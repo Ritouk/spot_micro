@@ -14,4 +14,4 @@ gnome-terminal -- bash -c "ros2 launch spot_bringup spot_app.launch.py; exec bas
 sleep 1
 
 #Open terminal and excute the command inside:
-gnome-terminal -- bash -c "ros2 run spot_py_pkg controller_input; exec bash"
+gnome-terminal -- bash -c "ros2 run motion_control controller_input; exec bash"

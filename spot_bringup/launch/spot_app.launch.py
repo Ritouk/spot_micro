@@ -5,19 +5,19 @@ from launch_ros.actions import Node
 def generate_launch_description():
     ld = LaunchDescription()
     controller_input_node = Node(
-        package="spot_py_pkg",
+        package="motion_control",
         executable="controller_input",
         name="controller_input"
     )
     spot_controller_node = Node(
-        package="spot_py_pkg",
+        package="motion_control",
         executable="spot_controller",
         name="spot_controller",
         arguments=["--number_of_cycles", "1"],
         on_exit= actions.Shutdown()
     )
     gyroscope_node = Node(
-        package="spot_cpp_pkg",
+        package="gyroscope",
         executable="gyroscope",
         name="gyroscope",
         arguments=["--number_of_cycles", "1"],
