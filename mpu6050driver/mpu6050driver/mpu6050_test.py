@@ -2,7 +2,7 @@ import mpu6050
 import time
 
 # Create a new Mpu6050 object
-mpu6050 = mpu6050.mpu6050(0x68)
+mpu6050 = mpu6050.MPU6050(0x68)
 
 # Define a function to read the sensor data
 def read_sensor_data():
