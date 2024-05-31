@@ -1,4 +1,4 @@
-int32 servo_number
+int32 servo_nb
 float32 angle
 ---
 bool success

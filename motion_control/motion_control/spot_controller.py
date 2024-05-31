@@ -1,7 +1,8 @@
 import rclpy
 from rclpy.node import Node
 from example_interfaces.msg import String
-
+from spot_interfaces.srv import SetServo
+from functools import partial
 import time
 import numpy as np
 
@@ -14,11 +15,9 @@ class SpotControllerNode(Node):
     def __init__(self):
         super().__init__("spot_controller")
         self.subscriber_ = self.create_subscription(
-            String, "control_input", self.callback_robot_news, 10)
+            String, "control_input", self.callback_keyboard_input, 10)
         self.get_logger().info(
             "Robot Control has been Started, initializing position")
-        #init Servo kit
-        self.servokit_init()
         
         #init servo data
         self.servo_data_init()
@@ -40,7 +39,7 @@ class SpotControllerNode(Node):
         print("Shutting down, putting robot in sleep")
         print("Done, bye! ")
                 
-    def callback_robot_news(self, msg):
+    def callback_keyboard_input(self, msg):
         self.get_logger().info(f"Control has been recieved: {msg.data}")
         self.switch(msg.data)
     
@@ -72,22 +71,21 @@ class SpotControllerNode(Node):
         else:
             self.get_logger().info(f"No command exist for this input: {char}")
         self.get_logger().info(f"Ready for next Input")
-
-    def servokit_init(self):
-        try:
-            self.kit = ServoKit(channels=16)
-            print("ServoKit Connected!")
-        except:
-            print("ServoKit Not Connected, simulating command")
-            class Servo:
-                def __init__(self):
-                    self.angle = 0
-                    
-            class Kit:
-                def __init__(self):
-                    self.servo = [Servo() for _ in range(16)]
-                
-            self.kit = Kit()
+    
+    def call_servo_server(self, servo_nb, angle):
+        client = self.create_client(SetServo, "set_servo")
+        while not client.wait_for_service(1.0):
+            self.get_logger().warn("Waiting for servo server....")
+        request = SetServo.Request()
+        request.servo_nb = servo_nb
+        request.angle = angle
+        
+        future = client.call_async(request)
+        future.add_done_callback(partial(self.callback_call_servo_server))
+    
+    def callback_call_servo_server(self, future):
+        response = future.result()
+        self.get_logger().info(response.message)
     
     def servo_data_init(self):
         #Only to showcase their number
@@ -231,49 +229,48 @@ class SpotControllerNode(Node):
 
     def calib(self):
         #shoulders
-        self.kit.servo[RFE].angle = 90
-        self.kit.servo[LFE].angle = 90
-        self.kit.servo[RBE].angle = 90
-        self.kit.servo[LBE].angle = 90
+        self.call_servo_server(RFE, 90)
+        self.call_servo_server(LFE, 90)
+        self.call_servo_server(LBE, 90)
+        self.call_servo_server(RBE, 90)
         time.sleep(1)
         #forearms
-        self.kit.servo[RFI].angle = 90
-        self.kit.servo[LFI].angle = 90
-        self.kit.servo[RBI].angle = 90
-        self.kit.servo[LBI].angle = 90
-        time.sleep(1)
-        #arms
-        self.kit.servo[RFK].angle = 90
-        self.kit.servo[LFK].angle = 90
-        self.kit.servo[RBK].angle = 90
-        self.kit.servo[LBK].angle = 90
+        self.call_servo_server(RFI, 90)
+        self.call_servo_server(LFI, 90)
+        self.call_servo_server(RBI, 90)
+        self.call_servo_server(LBI, 90)
+        #arms        
+        self.call_servo_server(RFK, 90)
+        self.call_servo_server(LFK, 90)
+        self.call_servo_server(RBK, 90)
+        self.call_servo_server(LBK, 90)
     
     def pos_test(self):
         #shoulders
-        self.kit.servo[RFE].angle = TEST_POS[RFE]
-        self.kit.servo[LFE].angle = TEST_POS[LFE]
-        self.kit.servo[LBE].angle = TEST_POS[LBE]
-        self.kit.servo[RBE].angle = TEST_POS[RBE]
+        self.call_servo_server(RFE, TEST_POS[RFE])
+        self.call_servo_server(LFE, TEST_POS[LFE])
+        self.call_servo_server(LBE, TEST_POS[LBE])
+        self.call_servo_server(RBE, TEST_POS[RBE])
         time.sleep(1)
         #forearms
-        self.kit.servo[RFI].angle = TEST_POS[RFI]
-        self.kit.servo[LFI].angle = TEST_POS[LFI]
-        self.kit.servo[RBI].angle = TEST_POS[RBI]
-        self.kit.servo[LBI].angle = TEST_POS[LBI]
-        #arms
-        self.kit.servo[RFK].angle = TEST_POS[RFK]
-        self.kit.servo[LFK].angle = TEST_POS[LFK]
-        self.kit.servo[RBK].angle = TEST_POS[RBK]
-        self.kit.servo[LBK].angle = TEST_POS[LBK]
+        self.call_servo_server(RFI, TEST_POS[RFI])
+        self.call_servo_server(LFI, TEST_POS[LFI])
+        self.call_servo_server(RBI, TEST_POS[RBI])
+        self.call_servo_server(LBI, TEST_POS[LBI])
+        #arms        
+        self.call_servo_server(RFK, TEST_POS[RFK])
+        self.call_servo_server(LFK, TEST_POS[LFK])
+        self.call_servo_server(RBK, TEST_POS[RBK])
+        self.call_servo_server(LBK, TEST_POS[LBK])
         
     def direct_pos(self, array):
         for i in [RFE, LFE, RBE, LBE]:
             #print(f"servo {i} gets the value {array[i]}")
-            self.kit.servo[i].angle = array[i]
+            self.call_servo_server(i, array[i])
         time.sleep(1)
         for i in [RFI, LFI, RBI, LBI, RFK, LFK, RBK, LBK]:
             #print(f"servo {i} gets the value {array[i]}")
-            self.kit.servo[i].angle = array[i]
+            self.call_servo_server(i, array[i])
         time.sleep(1)
                       
     def pos_test_safe(self, times):
@@ -288,12 +285,6 @@ class SpotControllerNode(Node):
                                 RFK, LFK, LBK, RBK], TEST_POS
                                , times)
             
-    def angle_norm(self, servo, angle):
-    #not sure its worth the headeache, will see.
-        if (servo%0 !=0):
-            self.kit.servo[servo].angle = 180 - angle
-        else:
-            self.kit.servo[servo].angle = angle
             
         
 def main(args=None):
