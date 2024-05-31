@@ -45,7 +45,7 @@ class MPU6050Sensor {
   void reportError(int error);
 
   int file_;
-  char filename_[10] = "/dev/i2c-";
+  char filename_[11] = "/dev/i2c-1";
   int accel_range_{2};
   int gyro_range_{250};
   int dlpf_range_{260};
