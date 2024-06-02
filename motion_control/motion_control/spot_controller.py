@@ -58,13 +58,13 @@ class SpotControllerNode(Node):
             self.lie_down(times=1)
         elif char == "u":
             self.get_logger().info("Get Up")
-            self.get_up(times=1)
+            self.get_up(times=0.8)
         elif char == "l":
             self.get_logger().info("Low")
-            self.low(times=1)
+            self.low(times=0.8)
         elif char == "s":
             self.get_logger().info("Sit")
-            self.sit(times = 0.5)
+            self.sit(times = 1)
         elif char == "x":
             #NOT WORKING PROPERLY
             self.get_logger().info("Shutting down, putting robot in sleep")

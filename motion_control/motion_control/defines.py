@@ -27,6 +27,7 @@ LBK = 14
 LBI = 12
 LBE = 10
 
+#CALIB_CORR =  [NIU,  -20, 10, -10,  -10,   5, 25, NIU, NIU, NIU,  10,  0,   0,   0, 10,  -20]
 ###-------- Servo data
 SERVO_ORDER = [NIU, RFK, LFK, RFI, LFI, RFE, LFE, NIU, NIU, NIU, LBE, RBE, LBI, RBI, LBK, RBK]
 # First Calibration, to assemble the servos 
@@ -52,7 +53,7 @@ UP_POS = [NIU, -45, 45, 30, -30, 0, 0, NIU, NIU, NIU, 0, 0, -30,30, 45, -45]
 UP_POS = [a + b for a, b in zip(DEFAULT_POS, UP_POS)]
 print(DEFAULT_POS)
 print(UP_POS)
-SIT_POS = [NIU, -45, 45, 30, -30, 0, 0, NIU, NIU, NIU, 0, 0, 0, 0, 30, -30]
+SIT_POS = [NIU, -60, 60, 30, -30, 0, 0, NIU, NIU, NIU, 0, 0, 0, 0, 0, 0]
 SIT_POS = [a + b for a, b in zip(LOW_POS, SIT_POS)]
 #Relative Positions 
 
@@ -62,7 +63,7 @@ TEST_POS    = [NIU,  0, 180,  30, 150, 100,  90, NIU, NIU, NIU, 100,  85,  90,  
 MIN_POS =     [NIU,  20,  20,  20,  20,  20,  20, NIU, NIU, NIU,  20,  20,  20,  20,  20,  20]
 MAX_POS =     [NIU, 160, 160, 160, 160, 160, 160, NIU, NIU, NIU, 160, 160, 160, 160, 160, 160]
 
-#CALIB_CORR =  [NIU,  -20, 10, -10,  -10,   5, 25, NIU, NIU, NIU,  10,  0,   0,   0, 10,  -20]
+
 MIN_POS =     [NIU,   0,   10,   0,   0,   0,   0, NIU, NIU, NIU,   0,   0,   0,   0, 10,   0]
 MAX_POS =     [NIU, 160, 100, 180, 180, 180, 180, NIU, NIU, NIU, 180, 180, 180, 180, 180, 160]
 """
