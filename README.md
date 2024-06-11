@@ -7,7 +7,7 @@ Welcome to the iKelev Robot project! This project aims to build a quadruped robo
 ## Table of Contents
 - [Objectives](#objectives)
 - [Features](#features)
-- [Code Stucture](#codestructure)
+- [Code Stucture](#code-structure)
 
 ## Objectives
 
