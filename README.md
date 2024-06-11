@@ -7,6 +7,7 @@ Welcome to the iKelev Robot project! This project aims to build a quadruped robo
 ## Table of Contents
 - [Objectives](#objectives)
 - [Features](#features)
+- [Code Stucture](#codestructure)
 
 ## Objectives
 
@@ -23,3 +24,10 @@ Welcome to the iKelev Robot project! This project aims to build a quadruped robo
 - **Depth Sensing**: Uses sonar and camera to measure distance to objects and navigate safely. - Working on it 
 - **Follow Me Mode**: The robot can follow a person using visual and distance tracking. - Working on it 
 - **Emotes**: The robot can display basic emotions such as happiness, sadness, and surprise. - Working on it 
+
+## Code Structure
+
+The repository is organized as follows:
+
+- **main**: The main branch where the current development and work-in-progress code resides.
+- **stable**: Branches named `SpotOS-vX.Y` (where X.Y represents the version number) contain the stable versions of the program.
