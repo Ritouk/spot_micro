@@ -1,12 +1,12 @@
 import rclpy
 from rclpy.node import Node
 from example_interfaces.msg import String
-from spot_interfaces.srv import SetServo
+from spot_interfaces.srv import SetServo, StateMachineInfo, StateMachineSet
 from functools import partial
 import time
 import numpy as np
 
-from adafruit_servokit import ServoKit
+#from adafruit_servokit import ServoKit
 
 from motion_control.defines import *
 
@@ -20,7 +20,7 @@ class SpotControllerNode(Node):
             "Robot Control has been Started, initializing position")
         
         #init servo data
-        self.servo_data_init()
+        self.data_init()
         
         #intializing 
         if (IS_CALIB):
@@ -43,6 +43,25 @@ class SpotControllerNode(Node):
         self.get_logger().info(f"Control has been recieved: {msg.data}")
         self.switch(msg.data)
     
+    def call_state_machine_info_server(self):
+        client = self.create_client(StateMachineInfo, "state_machine_info")
+        while not client.wait_for_service(1.0):
+            self.get_logger().warn("Wairing for State machine server....")
+            
+        request = StateMachineInfo.Request()
+        request.what_state = True
+        
+        origin = "spot_controller"
+        future = client.call_async(request, origin)
+        future.add_done_callback()
+        
+    def callback_state_machine_info_server(self, future, origin):
+        try:
+            response = future.result()
+            self.machine_state = response.message
+        except Exception as e:
+            pass
+        
     def switch(self,char):
         if char == 'A':
             self.get_logger().info("FORWARD")
@@ -87,7 +106,7 @@ class SpotControllerNode(Node):
         response = future.result()
         self.get_logger().info(response.message)
     
-    def servo_data_init(self):
+    def data_init(self):
         #Only to showcase their number
         self.servos_nb   = [ 1,   2,  3,  4,   5,  6,  7,  8,  9,  10, 11, 12,  13, 14, 15]
         
@@ -96,6 +115,8 @@ class SpotControllerNode(Node):
         #maximum and minimum of the position
         self.min_pos = MIN_POS
         self.max_pos = MAX_POS
+        
+        self.machine_state = "init"
             
     def change_current_pos(self, servos, new_pos):
         for i, servo_nb in enumerate(servos):
