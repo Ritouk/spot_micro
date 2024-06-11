@@ -1,8 +1,8 @@
-# Spot Micro Robot Project
+# iKelev Robot Project
 
-![Spot Micro](https://example.com/spot-micro-logo.png)
 
-Welcome to the Spot Micro Robot project! This project aims to build a quadruped robot capable of navigating its environment, self-correcting using IMU data, performing depth sensing with sonar and a camera, following a user, and expressing emotions.
+
+Welcome to the iKelev Robot project! This project aims to build a quadruped robot capable of navigating its environment, self-correcting using IMU data, performing depth sensing with sonar and a camera, following a user, and expressing emotions.
 
 ## Table of Contents
 - [Objectives](#objectives)
