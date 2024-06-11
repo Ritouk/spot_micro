@@ -15,7 +15,7 @@ class PCA9685DriverServerNode(Node):
         try:
             self.kit = ServoKit(channels=16)
             self.get_logger().info("pca9685 driver has been Started")
-            is_pca_working = True
+            self.is_pca_working = True
         except:
             self.get_logger().warn("Couldn't connect to PCA9685")
             return

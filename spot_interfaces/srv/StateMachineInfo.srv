@@ -1,5 +1,4 @@
-int32 servo_nb
-float32 angle
+string state
 ---
 bool success
 string message
