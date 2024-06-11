@@ -7,12 +7,6 @@ Welcome to the Spot Micro Robot project! This project aims to build a quadruped 
 ## Table of Contents
 - [Objectives](#objectives)
 - [Features](#features)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Objectives
 
@@ -24,8 +18,8 @@ Welcome to the Spot Micro Robot project! This project aims to build a quadruped 
 
 ## Features
 
-- **Autonomous Navigation**: The robot can autonomously navigate its surroundings, avoiding obstacles.
-- **IMU-Based Self-Correction**: Real-time orientation correction using IMU data.
-- **Depth Sensing**: Uses sonar and camera to measure distance to objects and navigate safely.
-- **Follow Me Mode**: The robot can follow a person using visual and distance tracking.
-- **Emotes**: The robot can display basic emotions such as happiness, sadness, and surprise.
+- **Autonomous Navigation**: The robot can autonomously navigate its surroundings, avoiding obstacles. - Working on it 
+- **IMU-Based Self-Correction**: Real-time orientation correction using IMU data. - Working on it 
+- **Depth Sensing**: Uses sonar and camera to measure distance to objects and navigate safely. - Working on it 
+- **Follow Me Mode**: The robot can follow a person using visual and distance tracking. - Working on it 
+- **Emotes**: The robot can display basic emotions such as happiness, sadness, and surprise. - Working on it 
