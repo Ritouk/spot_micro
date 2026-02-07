@@ -1,12 +1,11 @@
 import rclpy
 from rclpy.node import Node
 from example_interfaces.msg import String
+from sensor_msgs.msg import JointState
 from spot_interfaces.srv import SetServo, StateMachineInfo, StateMachineSet
 from functools import partial
 import time
 import numpy as np
-
-#from adafruit_servokit import ServoKit
 
 from motion_control.defines import *
 
@@ -14,15 +13,30 @@ from motion_control.defines import *
 class SpotControllerNode(Node):
     def __init__(self):
         super().__init__("spot_controller")
+
+        # Simulation mode parameter — when True, no hardware access
+        self.declare_parameter('simulation_mode', True)
+        self.simulation_mode = self.get_parameter('simulation_mode').value
+        self.get_logger().info(f"Simulation mode: {self.simulation_mode}")
+
+        # Conditionally import and init servo hardware
+        if not self.simulation_mode:
+            from adafruit_servokit import ServoKit
+            self.kit = ServoKit(channels=16)
+
         self.subscriber_ = self.create_subscription(
             String, "control_input", self.callback_keyboard_input, 10)
+
+        # JointState publisher for RViz visualization
+        self.joint_state_pub = self.create_publisher(JointState, '/joint_states', 10)
+
         self.get_logger().info(
             "Robot Control has been Started, initializing position")
-        
+
         #init servo data
         self.data_init()
-        
-        #intializing 
+
+        #intializing
         if (IS_CALIB):
             print("Calibration Mode")
             self.direct_pos(CALIB_POS)
@@ -32,7 +46,7 @@ class SpotControllerNode(Node):
         else:
             print("Waking up")
             self.wake_up()
-            
+
         self.get_logger().info("Robot Ready for input")
                
     def __del__(self):
@@ -111,13 +125,24 @@ class SpotControllerNode(Node):
         self.servos_nb   = [ 1,   2,  3,  4,   5,  6,  7,  8,  9,  10, 11, 12,  13, 14, 15]
         
         #Default position, low position
-        self.current_pos = DEFAULT_POS
+        self.current_pos = list(DEFAULT_POS)
         #maximum and minimum of the position
         self.min_pos = MIN_POS
         self.max_pos = MAX_POS
         
         self.machine_state = "init"
             
+    def publish_joint_states(self):
+        """Publish current servo positions as a JointState message."""
+        msg = JointState()
+        msg.header.stamp = self.get_clock().now().to_msg()
+        for ch in SERVO_CHANNELS:
+            joint_name = CHANNEL_TO_JOINT[ch]
+            angle_deg = self.current_pos[ch]
+            msg.name.append(joint_name)
+            msg.position.append(servo_deg_to_rad(ch, angle_deg))
+        self.joint_state_pub.publish(msg)
+
     def change_current_pos(self, servos, new_pos):
         for i, servo_nb in enumerate(servos):
             #print(f"{i}, {servo_nb}, {new_pos[i]}")
@@ -172,12 +197,15 @@ class SpotControllerNode(Node):
         #print(pos_matrix)
         
         #movement
-        for j in range(num_intervals): 
+        for j in range(num_intervals):
             for i, servo_nb in enumerate(servos):
                 print(f"servo {servo_nb} goes into position {pos_matrix[i,j]}")
-                self.kit.servo[servo_nb].angle = pos_matrix[i,j]
+                self.current_pos[servo_nb] = pos_matrix[i, j]
+                if not self.simulation_mode:
+                    self.kit.servo[servo_nb].angle = pos_matrix[i, j]
+            self.publish_joint_states()
             time.sleep(interval)
-            
+
         #update current position
         self.change_current_pos(servos, new_positions)
         
@@ -223,22 +251,18 @@ class SpotControllerNode(Node):
     def low_default(self):
         print("Getting to default - low")
         #shoulders
-        self.kit.servo[RFE].angle = DEFAULT_POS[RFE]
-        self.kit.servo[LFE].angle = DEFAULT_POS[LFE]
-        self.kit.servo[LBE].angle = DEFAULT_POS[LBE]
-        self.kit.servo[RBE].angle = DEFAULT_POS[RBE]
+        for ch in [RFE, LFE, LBE, RBE]:
+            self.current_pos[ch] = DEFAULT_POS[ch]
+            if not self.simulation_mode:
+                self.kit.servo[ch].angle = DEFAULT_POS[ch]
+        self.publish_joint_states()
         time.sleep(1)
-        #forearms
-        self.kit.servo[RFI].angle = DEFAULT_POS[RFI]
-        self.kit.servo[LFI].angle = DEFAULT_POS[LFI]
-        self.kit.servo[RBI].angle = DEFAULT_POS[RBI]
-        self.kit.servo[LBI].angle = DEFAULT_POS[LBI]
-        #arms
-        self.kit.servo[RFK].angle = DEFAULT_POS[RFK]
-        self.kit.servo[LFK].angle = DEFAULT_POS[LFK]
-        self.kit.servo[RBK].angle = DEFAULT_POS[RBK]
-        self.kit.servo[LBK].angle = DEFAULT_POS[LBK]
-
+        #forearms and arms
+        for ch in [RFI, LFI, RBI, LBI, RFK, LFK, RBK, LBK]:
+            self.current_pos[ch] = DEFAULT_POS[ch]
+            if not self.simulation_mode:
+                self.kit.servo[ch].angle = DEFAULT_POS[ch]
+        self.publish_joint_states()
         time.sleep(1)
         
     def wake_up(self):

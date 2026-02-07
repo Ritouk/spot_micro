@@ -66,6 +66,44 @@ MAX_POS =     [NIU, 160, 160, 160, 160, 160, 160, NIU, NIU, NIU, 160, 160, 160, 
 
 MIN_POS =     [NIU,   0,   10,   0,   0,   0,   0, NIU, NIU, NIU,   0,   0,   0,   0, 10,   0]
 MAX_POS =     [NIU, 160, 100, 180, 180, 180, 180, NIU, NIU, NIU, 180, 180, 180, 180, 180, 160]
+###------ URDF Joint Mapping
+import math
+
+# Maps servo channel number to URDF joint name
+CHANNEL_TO_JOINT = {
+    RFE: 'rf_hip_external_joint',
+    RFI: 'rf_hip_internal_joint',
+    RFK: 'rf_knee_joint',
+    LFE: 'lf_hip_external_joint',
+    LFI: 'lf_hip_internal_joint',
+    LFK: 'lf_knee_joint',
+    RBE: 'rb_hip_external_joint',
+    RBI: 'rb_hip_internal_joint',
+    RBK: 'rb_knee_joint',
+    LBE: 'lb_hip_external_joint',
+    LBI: 'lb_hip_internal_joint',
+    LBK: 'lb_knee_joint',
+}
+
+# All servo channels that are used
+SERVO_CHANNELS = sorted(CHANNEL_TO_JOINT.keys())
+
+# Left-side channels where servo direction is mirrored
+MIRRORED_CHANNELS = {LFK, LFI, LFE, LBK, LBI, LBE}
+
+
+def servo_deg_to_rad(channel, degrees):
+    """Convert servo degrees (0-180, 90=center) to radians (0=center).
+
+    For mirrored channels (left side), the sign is negated so that
+    the URDF joint moves in the correct direction.
+    """
+    rad = math.radians(degrees - 90.0)
+    if channel in MIRRORED_CHANNELS:
+        rad = -rad
+    return rad
+
+
 """
 How to calibrate
 1. Mechanical Calbiration
